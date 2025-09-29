@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>도시 건설 플래너 - 꿈의 도시를 건설하세요! 🏗️</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    
+    <!-- 고도 및 진행률 표시 패널 -->
+    <div class="altitude-panel">
+        <div class="altitude-display">
+            <span class="altitude-label">총 층수</span>
+            <span class="altitude-value" id="altitudeValue">0층</span>
+        </div>
+        <div class="progress-section">
+            <div class="next-goal">
+                <span id="nextGoalText">다음 목표: 작은 마을 (10층)</span>
+            </div>
+            <div class="progress-bar">
+                <div class="progress-fill" id="progressFill"></div>
+            </div>
+            <div class="progress-text" id="progressText">0%</div>
+        </div>
+    </div>
+
+    <!-- 성취 알림 -->
+    <div class="achievement-popup" id="achievementPopup">
+        <div class="achievement-content">
+            <h2 id="achievementTitle">🎉 목표 달성!</h2>
+            <p id="achievementText">새로운 도시 단계에 도달했습니다!</p>
+        </div>
+    </div>
+
+    <!-- 건물들이 쌓일 컨테이너 -->
+    <div class="city-container">
+        <div class="buildings" id="buildings"></div>
+        <div class="ground"></div>
+    </div>
+    
+    <button id="levelUpBtn">건물 짓기! 🏗️</button>
+
+    <script src="script.js"></script>
+</body>
+</html>

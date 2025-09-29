@@ -3,39 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>레벨 업 애니메이션</title>
-    <link rel="stylesheet" href="style.css">
+    <title>픽셀 엘리베이터 - 코코넛과 함께 하늘로! 🛗</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* 픽셀 아트 렌더링을 위한 글로벌 스타일 */
+        * {
+            image-rendering: -moz-crisp-edges;
+            image-rendering: -webkit-crisp-edges;
+            image-rendering: pixelated;
+            image-rendering: crisp-edges;
+        }
+        
+        /* 바운스 애니메이션 */
+        @keyframes bounce {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -5px); }
+        }
+        
+        .bounce-animation {
+            animation: bounce 0.5s infinite;
+        }
+    </style>
 </head>
 <body>
-    
-    <!-- 고도 및 진행률 표시 패널 -->
-    <div class="altitude-panel">
-        <div class="altitude-display">
-            <span class="altitude-label">현재 고도</span>
-            <span class="altitude-value" id="altitudeValue">0m</span>
-        </div>
-        <div class="progress-section">
-            <div class="next-goal">
-                <span id="nextGoalText">다음 목표: 1,000m</span>
-            </div>
-            <div class="progress-bar">
-                <div class="progress-fill" id="progressFill"></div>
-            </div>
-            <div class="progress-text" id="progressText">0%</div>
-        </div>
-    </div>
-
-    <!-- 성취 알림 -->
-    <div class="achievement-popup" id="achievementPopup">
-        <div class="achievement-content">
-            <h2 id="achievementTitle">🎉 뿡뻉 달성!</h2>
-            <p id="achievementText">1,000m 고도에 도달했습니다!</p>
-        </div>
-    </div>
-
-    <div class="character"></div>
-    <button id="levelUpBtn">목표를 향해 발사! 🚀</button>
-
-    <script src="script.js"></script>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
 </body>
 </html>
