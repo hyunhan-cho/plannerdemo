@@ -3,30 +3,507 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>픽셀 엘리베이터 - 코코넛과 함께 하늘로! 🛗</title>
-    <script src="https://cdn.tailwindcss.com"></script>
+    <title>🥺🥺</title>
     <style>
-        /* 픽셀 아트 렌더링을 위한 글로벌 스타일 */
-        * {
-            image-rendering: -moz-crisp-edges;
-            image-rendering: -webkit-crisp-edges;
-            image-rendering: pixelated;
-            image-rendering: crisp-edges;
-        }
+        @import url('https://fonts.googleapis.com/css2?family=Black+Han+Sans&display=swap');
         
-        /* 바운스 애니메이션 */
-        @keyframes bounce {
-            0%, 100% { transform: translate(-50%, 0); }
-            50% { transform: translate(-50%, -5px); }
+        body {
+            margin: 0;
+            overflow: hidden;
+            font-family: 'Black Han Sans', sans-serif;
         }
-        
-        .bounce-animation {
-            animation: bounce 0.5s infinite;
+        #container {
+            width: 100vw;
+            height: 100vh;
+        }
+        #ui {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            padding: 2vmin;
+            z-index: 10;
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            pointer-events: none;
+        }
+        #leftUI, #rightUI {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5vmin;
+        }
+        #rightUI {
+            align-items: flex-end;
+        }
+        .info-box {
+            background: linear-gradient(135deg, rgba(0,0,0,0.8), rgba(50,50,50,0.8));
+            padding: 1.5vmin 2.5vmin;
+            border-radius: 1.5vmin;
+            border: 0.4vmin solid #FFD700;
+            box-shadow: 0 0 2vmin rgba(255,215,0,0.5);
+        }
+        #floorDisplay {
+            font-size: 4vmin;
+            color: #FFD700;
+            text-shadow: 0 0 1vmin #FF6B00, 0.2vmin 0.2vmin 0.4vmin #000;
+        }
+        #score {
+            font-size: 2.8vmin;
+            color: #00FF00;
+            text-shadow: 0 0 1vmin #00FF00;
+        }
+        #combo {
+            font-size: 2.4vmin;
+            color: #FF1493;
+            text-shadow: 0 0 1vmin #FF1493;
+        }
+        #speedometer {
+            font-size: 2vmin;
+            color: #00FFFF;
+            text-shadow: 0 0 1vmin #00FFFF;
+        }
+        #mission {
+            font-size: 1.8vmin;
+            color: #FFF;
+            background: linear-gradient(135deg, rgba(255,0,0,0.8), rgba(255,100,0,0.8));
+            padding: 1vmin 2vmin;
+            border-radius: 1vmin;
+            border: 0.3vmin solid #FFD700;
+            max-width: 30vmin;
+        }
+        #controls {
+            position: absolute;
+            bottom: 3vmin;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 10;
+            display: flex;
+            gap: 1.5vmin;
+        }
+        button {
+            font-size: 2.5vmin;
+            padding: 1.5vmin 4vmin;
+            cursor: pointer;
+            background: linear-gradient(135deg, #FF6B00, #FF0000);
+            color: white;
+            border: 0.4vmin solid #FFD700;
+            border-radius: 1.5vmin;
+            box-shadow: 0 0.6vmin 2vmin rgba(255,107,0,0.6);
+            font-family: 'Black Han Sans', sans-serif;
+            transition: all 0.2s;
+        }
+        button:hover {
+            transform: scale(1.1);
+            box-shadow: 0 0.8vmin 3vmin rgba(255,215,0,0.8);
+        }
+        button:active {
+            transform: scale(0.95);
+        }
+        #particles {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+        .particle {
+            position: absolute;
+            font-size: 3vmin;
+            animation: float-up 1s ease-out forwards;
+            pointer-events: none;
+        }
+        @keyframes float-up {
+            0% { transform: translateY(0) scale(1); opacity: 1; }
+            100% { transform: translateY(-10vmin) scale(1.5); opacity: 0; }
+        }
+        .achievement {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            padding: 3vmin 6vmin;
+            border-radius: 2vmin;
+            border: 0.5vmin solid #FF0000;
+            font-size: 5vmin;
+            color: #FFF;
+            text-shadow: 0.3vmin 0.3vmin 0.6vmin #000;
+            animation: achievement-pop 2s ease-out forwards;
+            z-index: 100;
+            box-shadow: 0 0 5vmin rgba(255,215,0,0.8);
+        }
+        @keyframes achievement-pop {
+            0% { transform: translate(-50%, -50%) scale(0); opacity: 0; }
+            50% { transform: translate(-50%, -50%) scale(1.2); opacity: 1; }
+            80% { transform: translate(-50%, -50%) scale(1); opacity: 1; }
+            100% { transform: translate(-50%, -50%) scale(1); opacity: 0; }
         }
     </style>
 </head>
 <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
+    <div id="ui">
+        <div id="leftUI">
+            <div class="info-box">
+                <div id="floorDisplay">1층 🌊</div>
+            </div>
+            <div class="info-box">
+                <div id="score">🥹 점수: 0</div>
+                <div id="combo">🥹 콤보: x1</div>
+                <div id="speedometer">⚡ 속도: 0 km/h</div>
+            </div>
+        </div>
+        <div id="rightUI">
+            <div id="mission" class="info-box">
+                🎯 미션: 3층 도달!
+            </div>
+        </div>
+    </div>
+    <div id="particles"></div>
+    <div id="container"></div>
+    <div id="controls">
+        <button onclick="goUp()">🚀 올라가기</button>
+        <button onclick="goDown()">⬇️ 내려가기</button>
+        <button onclick="turboBoost()" style="background: linear-gradient(135deg, #FFD700, #FFA500);">⚡ 터보</button>
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script>
+        let scene, camera, renderer, elevator, currentFloor = 1;
+        let coconuts = []; // 코코넛을 담을 배열
+        let targetY = 0;
+        let isMoving = false;
+        const floorHeight = 3;
+        let stars = [];
+        let coins = [];
+        
+        // 게임 상태
+        let score = 0;
+        let combo = 1;
+        let speed = 0;
+        let turboMode = false;
+        let missions = [
+            { floor: 3, reward: 500, text: "3층 도달!", completed: false },
+            { floor: 5, reward: 1000, text: "5층 정복!", completed: false },
+            { floor: 7, reward: 1500, text: "7층 도전!", completed: false },
+            { floor: 10, reward: 5000, text: "최상층 제패!", completed: false }
+        ];
+        let currentMissionIndex = 0;
+
+        const floorThemes = {
+            1: { name: '한국외대', skyColor: 0x87CEEB, groundColor: 0xF4A460, emoji: '🏖️' },
+            2: { name: '🌳 정글', skyColor: 0x228B22, groundColor: 0x2F4F2F, emoji: '🦜' },
+            3: { name: '🏜️ 사막', skyColor: 0xFFD700, groundColor: 0xDEB887, emoji: '🐪' },
+            4: { name: '❄️ 빙하', skyColor: 0xE0F6FF, groundColor: 0xFFFFFF, emoji: '🐧' },
+            5: { name: 'ㅠㅠㅠ', skyColor: 0xFF4500, groundColor: 0x8B0000, emoji: '🔥' },
+            6: { name: 'ㅎㅎㅎ', skyColor: 0xFFB6C1, groundColor: 0xFFE4E1, emoji: '🌺' },
+            7: { name: '🌆 네온시티', skyColor: 0x4169E1, groundColor: 0x708090, emoji: '🌃' },
+            8: { name: '🌌 우주정거장', skyColor: 0x000033, groundColor: 0x191970, emoji: '🛸' },
+            9: { name: '곧 목표 완이다 ㅋㅋㅋ', skyColor: 0xE6F3FF, groundColor: 0xFFFFFF, emoji: '😇' },
+            10: { name: '배고파파', skyColor: 0xFF69B4, groundColor: 0x9370DB, emoji: '👑' }
+        };
+
+        // 코코넛 생성 함수
+        function createCoconut() {
+            const coconutGroup = new THREE.Group();
+            coconutGroup.userData.bobOffset = Math.random() * Math.PI * 2; // 개별적인 통통 튀는 애니메이션을 위한 오프셋
+
+            const bodyGeometry = new THREE.SphereGeometry(0.5, 32, 32); // 크기 살짝 줄임
+            const bodyMaterial = new THREE.MeshPhongMaterial({ color: 0x8B4513, roughness: 0.9 });
+            const body = new THREE.Mesh(bodyGeometry, bodyMaterial);
+            body.castShadow = true;
+            coconutGroup.add(body);
+
+            for (let i = 0; i < 8; i++) {
+                const stripeGeometry = new THREE.TorusGeometry(0.5, 0.02, 8, 32);
+                const stripeMaterial = new THREE.MeshPhongMaterial({ color: 0x654321 });
+                const stripe = new THREE.Mesh(stripeGeometry, stripeMaterial);
+                stripe.rotation.x = Math.PI / 2;
+                stripe.position.y = -0.35 + i * 0.1;
+                coconutGroup.add(stripe);
+            }
+
+            const eyeGeometry = new THREE.SphereGeometry(0.07, 16, 16);
+            const eyeMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
+            
+            const leftEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+            leftEye.position.set(-0.18, 0.1, 0.45);
+            coconutGroup.add(leftEye);
+
+            const rightEye = new THREE.Mesh(eyeGeometry, eyeMaterial);
+            rightEye.position.set(0.18, 0.1, 0.45);
+            coconutGroup.add(rightEye);
+
+            const smileGeometry = new THREE.TorusGeometry(0.15, 0.03, 8, 16, Math.PI);
+            const smileMaterial = new THREE.MeshPhongMaterial({ color: 0x000000 });
+            const smile = new THREE.Mesh(smileGeometry, smileMaterial);
+            smile.position.set(0, -0.05, 0.46);
+            smile.rotation.x = Math.PI;
+            smile.rotation.z = Math.PI;
+            coconutGroup.add(smile);
+
+            scene.add(coconutGroup);
+            return coconutGroup;
+        }
+
+        function init() {
+            scene = new THREE.Scene();
+            scene.background = new THREE.Color(floorThemes[1].skyColor);
+
+            camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+            camera.position.set(6, 2, 10);
+            camera.lookAt(0, 0, 0);
+
+            renderer = new THREE.WebGLRenderer({ antialias: true });
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            renderer.shadowMap.enabled = true;
+            document.getElementById('container').appendChild(renderer.domElement);
+
+            const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+            scene.add(ambientLight);
+
+            const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+            directionalLight.position.set(5, 10, 5);
+            directionalLight.castShadow = true;
+            scene.add(directionalLight);
+
+            // 별 추가
+            for (let i = 0; i < 500; i++) {
+                const starGeometry = new THREE.SphereGeometry(0.1, 8, 8);
+                const starMaterial = new THREE.MeshBasicMaterial({ color: 0xffffff });
+                const star = new THREE.Mesh(starGeometry, starMaterial);
+                star.position.set((Math.random() - 0.5) * 100, Math.random() * 50, (Math.random() - 0.5) * 100);
+                star.visible = false;
+                scene.add(star);
+                stars.push(star);
+            }
+
+            const groundGeometry = new THREE.PlaneGeometry(100, 100);
+            const groundMaterial = new THREE.MeshPhongMaterial({ color: floorThemes[1].groundColor, side: THREE.DoubleSide });
+            const ground = new THREE.Mesh(groundGeometry, groundMaterial);
+            ground.rotation.x = -Math.PI / 2;
+            ground.position.y = -0.5;
+            ground.receiveShadow = true;
+            scene.add(ground);
+            window.ground = ground;
+
+            const shaftGeometry = new THREE.BoxGeometry(3, 32, 3);
+            const shaftMaterial = new THREE.MeshPhongMaterial({ color: 0x333333, transparent: true, opacity: 0.4, side: THREE.DoubleSide });
+            const shaft = new THREE.Mesh(shaftGeometry, shaftMaterial);
+            shaft.position.y = 16;
+            scene.add(shaft);
+
+            for (let i = 0; i <= 10; i++) {
+                const lineGeometry = new THREE.BoxGeometry(3.5, 0.15, 3.5);
+                const lineMaterial = new THREE.MeshPhongMaterial({ color: i === 10 ? 0xFFD700 : 0xFFFFFF, emissive: i === 10 ? 0xFF6B00 : 0x000000 });
+                const line = new THREE.Mesh(lineGeometry, lineMaterial);
+                line.position.y = i * floorHeight;
+                scene.add(line);
+            }
+
+            for (let i = 1; i <= 10; i++) {
+                const coinGeometry = new THREE.CylinderGeometry(0.3, 0.3, 0.1, 16);
+                const coinMaterial = new THREE.MeshPhongMaterial({ color: 0xFFD700, emissive: 0xFFA500, shininess: 100 });
+                const coin = new THREE.Mesh(coinGeometry, coinMaterial);
+                coin.position.set(2.5, i * floorHeight - 1.5, (Math.random() - 0.5) * 2);
+                coin.userData.collected = false;
+                scene.add(coin);
+                coins.push(coin);
+            }
+
+            const elevatorGeometry = new THREE.BoxGeometry(2.5, 0.3, 2.5);
+            const elevatorMaterial = new THREE.MeshPhongMaterial({ color: 0x8B4513, emissive: 0x4B2513 });
+            elevator = new THREE.Mesh(elevatorGeometry, elevatorMaterial);
+            elevator.castShadow = true;
+            scene.add(elevator);
+
+            // 여러 코코넛 생성 및 배치
+            const coconutCount = 4;
+            for(let i=0; i < coconutCount; i++) {
+                const newCoconut = createCoconut();
+                const angle = (i / coconutCount) * Math.PI * 2;
+                const radius = 0.6;
+                newCoconut.position.set(Math.cos(angle) * radius, 0.8, Math.sin(angle) * radius);
+                coconuts.push(newCoconut);
+            }
+
+            window.addEventListener('resize', onWindowResize);
+            updateMissionDisplay();
+            animate();
+        }
+
+        function goUp() {
+            if (!isMoving && currentFloor < 10) {
+                currentFloor++;
+                targetY = (currentFloor - 1) * floorHeight;
+                isMoving = true;
+                combo++;
+                updateFloorDisplay();
+                changeEnvironment();
+                checkMission();
+            }
+        }
+
+        function goDown() {
+            if (!isMoving && currentFloor > 1) {
+                currentFloor--;
+                targetY = (currentFloor - 1) * floorHeight;
+                isMoving = true;
+                combo = Math.max(1, combo - 1);
+                updateFloorDisplay();
+                changeEnvironment();
+            }
+        }
+
+        function turboBoost() {
+            if (!turboMode && currentFloor < 10) {
+                turboMode = true;
+                score += 100 * combo;
+                createParticle('💨', Math.random() * window.innerWidth, Math.random() * window.innerHeight);
+                setTimeout(() => { turboMode = false; }, 2000);
+            }
+        }
+
+        function updateFloorDisplay() {
+            const theme = floorThemes[currentFloor];
+            document.getElementById('floorDisplay').textContent = currentFloor + '층 ' + theme.name;
+        }
+
+        function updateScore() {
+            document.getElementById('score').textContent = '💰 점수: ' + score;
+            document.getElementById('combo').textContent = '🔥 콤보: x' + combo;
+            document.getElementById('speedometer').textContent = '⚡ 속도: ' + Math.round(speed) + ' km/h';
+        }
+
+        function changeEnvironment() {
+            const theme = floorThemes[currentFloor];
+            scene.background.setHex(theme.skyColor);
+            window.ground.material.color.setHex(theme.groundColor);
+            stars.forEach(star => star.visible = (currentFloor === 8));
+            createParticle(theme.emoji, window.innerWidth / 2, window.innerHeight / 2);
+        }
+
+        function checkCoinCollection() {
+            const mainCoconutPos = elevator.position.y + 0.5; // 대표 위치
+            coins.forEach(coin => {
+                if (!coin.userData.collected) {
+                    const distance = Math.abs(mainCoconutPos - coin.position.y);
+                    if (distance < 0.8) {
+                        coin.userData.collected = true;
+                        coin.visible = false;
+                        score += 100 * combo;
+                        createParticle('💰', window.innerWidth / 2, window.innerHeight / 2);
+                        updateScore();
+                    }
+                }
+            });
+        }
+
+        function checkMission() {
+            if (currentMissionIndex < missions.length) {
+                const mission = missions[currentMissionIndex];
+                if (currentFloor >= mission.floor && !mission.completed) {
+                    mission.completed = true;
+                    score += mission.reward;
+                    showAchievement(mission.text + ' +' + mission.reward);
+                    currentMissionIndex++;
+                    if (currentMissionIndex < missions.length) {
+                        updateMissionDisplay();
+                    } else {
+                        document.getElementById('mission').textContent = '🎉 모든 미션 완료!';
+                    }
+                    updateScore();
+                }
+            }
+        }
+
+        function updateMissionDisplay() {
+            if (currentMissionIndex < missions.length) {
+                const mission = missions[currentMissionIndex];
+                document.getElementById('mission').textContent = `🎯 미션: ${mission.text} (보상: ${mission.reward})`;
+            }
+        }
+
+        function createParticle(emoji, x, y) {
+            const particle = document.createElement('div');
+            particle.className = 'particle';
+            particle.textContent = emoji;
+            particle.style.left = x + 'px';
+            particle.style.top = y + 'px';
+            document.getElementById('particles').appendChild(particle);
+            setTimeout(() => particle.remove(), 1000);
+        }
+
+        function showAchievement(text) {
+            const achievement = document.createElement('div');
+            achievement.className = 'achievement';
+            achievement.textContent = '🥹 ' + text + ' 🥹';
+            document.body.appendChild(achievement);
+            setTimeout(() => achievement.remove(), 2000);
+        }
+
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (isMoving) {
+                const baseSpeed = turboMode ? 0.15 : 0.05;
+                const diff = targetY - elevator.position.y;
+                
+                if (Math.abs(diff) > 0.01) {
+                    const movement = diff * baseSpeed;
+                    elevator.position.y += movement;
+                    speed = Math.abs(movement) * 1000;
+                    checkCoinCollection();
+                } else {
+                    elevator.position.y = targetY;
+                    speed = 0;
+                    isMoving = false;
+                }
+            } else {
+                 speed = 0;
+            }
+
+            // 모든 코코넛의 애니메이션 업데이트
+            coconuts.forEach(coconut => {
+                const basePosition = elevator.position.y + 0.8;
+                if (isMoving) {
+                    coconut.position.y = basePosition;
+                    coconut.rotation.y += 0.05 * (turboMode ? 2 : 1);
+                    coconut.rotation.z = Math.sin(Date.now() * 0.01) * 0.1;
+                } else {
+                    coconut.position.y = basePosition + Math.sin(Date.now() * 0.003 + coconut.userData.bobOffset) * 0.08;
+                    coconut.rotation.y += 0.01;
+                    coconut.rotation.z = 0;
+                }
+            });
+
+            coins.forEach(coin => {
+                if (!coin.userData.collected) coin.rotation.y += 0.05;
+            });
+
+            if (currentFloor === 8) {
+                stars.forEach(star => {
+                    const pulse = Math.sin(Date.now() * 0.003 + star.position.x) * 0.5 + 0.5;
+                    star.scale.setScalar(0.5 + pulse * 0.5);
+                });
+            }
+
+            camera.position.y = elevator.position.y + 2;
+            camera.lookAt(0, elevator.position.y, 0);
+
+            updateScore();
+            renderer.render(scene, camera);
+        }
+
+        function onWindowResize() {
+            camera.aspect = window.innerWidth / window.innerHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+        }
+
+        init();
+    </script>
 </body>
 </html>
